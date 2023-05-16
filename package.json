@@ -1,0 +1,19 @@
+{
+  "name": "imagebot-telegram",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "googlethis": "^1.7.1",
+    "mongodb": "^5.5.0",
+    "mongoose": "^7.1.1",
+    "telegraf": "^4.12.2"
+  }
+}
