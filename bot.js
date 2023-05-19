@@ -1,9 +1,24 @@
+const express = require('express');
 const { Telegraf } = require('telegraf');
 const { message } = require('telegraf/filters');
 const dotenv = require('dotenv');
 const google = require('googlethis');
 const mongoose = require('mongoose');
 dotenv.config();
+
+
+
+
+
+const app = express();
+const port = process.env.PORT;
+app.get("/", (req,res)=>{
+  res.send("Hi there, this is telegram imagebot");
+})
+
+app.listen(port, ()=>{
+    console.log("Server running on port "+ port);
+})
 
 
 //MongoDB
