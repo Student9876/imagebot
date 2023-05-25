@@ -40,11 +40,9 @@ const newItemSchema = {
 
 const Item = mongoose.model("searchdata", newItemSchema);
 
-
 const options = {
   safe: false
 }
-
 
 function randNum() {
   var x = parseInt(Math.random() * 10);
@@ -52,8 +50,9 @@ function randNum() {
 }
 
 bot.start((ctx) => ctx.reply('Hi Bhai'));
-bot.help((ctx) => ctx.reply('Send me a sticker'));
+bot.help((ctx) => ctx.reply('Type anything of which you want ot see photos'));
 bot.on(message('sticker'), (ctx) => ctx.reply('👍'));
+bot.on(message('emoji'), (ctx) => ctx.reply('👍'));
 
 bot.on('message', async (ctx) => {
   const searched_images = await google.image(ctx.message.text, options);
@@ -65,9 +64,12 @@ bot.on('message', async (ctx) => {
   });
   item.save();
 
-  images = searched_images.map(img => img.preview.url)
-  var x = randNum();
-  images.slice(x, x+2).forEach(_img => ctx.sendPhoto(_img))
+
+
+  let x=randNum();
+  let images = searched_images.map(img => img.preview.url);
+  images.slice(x, x+2).forEach(_img => ctx.sendPhoto(_img));
+  delete(images);
 
 });
 
