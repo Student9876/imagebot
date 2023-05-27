@@ -8,16 +8,14 @@ dotenv.config();
 
 
 
-
-
 const app = express();
 const port = process.env.PORT;
-app.get("/", (req,res)=>{
+app.get("/", (req, res) => {
   res.send("Hi there, this is telegram imagebot");
 })
 
-app.listen(port, ()=>{
-    console.log("Server running on port "+ port);
+app.listen(port, () => {
+  console.log("Server running on port " + port);
 })
 
 
@@ -51,8 +49,9 @@ function randNum() {
 
 bot.start((ctx) => ctx.reply('Hi Bhai'));
 bot.help((ctx) => ctx.reply('Type anything of which you want ot see photos'));
-bot.on(message('sticker'), (ctx) => ctx.reply('👍'));
+bot.on(message('sticker'), (ctx) => ctx.reply('Please send a text'));
 bot.on(message('emoji'), (ctx) => ctx.reply('👍'));
+bot.on(message('photo'), (ctx) => ctx.reply('Please send a text'));
 
 bot.on('message', async (ctx) => {
   const searched_images = await google.image(ctx.message.text, options);
@@ -66,16 +65,12 @@ bot.on('message', async (ctx) => {
 
 
 
-  let x=randNum();
-  let images = searched_images.map(img => img.preview.url);
-  images.slice(x, x+2).forEach(_img => ctx.sendPhoto(_img));
-  delete(images);
+  let x = randNum();
+  let images = searched_images.slice(0, 9).map(img => img.preview.url);
+  images.slice(x, x + 2).forEach(_img => ctx.sendPhoto(_img));
+  delete (images);
 
 });
-
-
-bot.hears('hi', (ctx) => ctx.reply('Hey there'));
-// bot.launch();
 
 bot.launch()
   .then(() => {
