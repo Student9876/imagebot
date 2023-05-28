@@ -43,7 +43,7 @@ const options = {
 }
 
 function randNum() {
-  var x = parseInt(Math.random() * 10);
+  var x = Math.floor(Math.random() * 10);
   return x;
 }
 
@@ -65,9 +65,9 @@ bot.on('message', async (ctx) => {
 
 
 
-  // let x = randNum();
+  let x = randNum();
   let images = searched_images.slice(0, 9).map(img => img.preview.url);
-  images.slice(randNum(), randNum()).forEach(_img => ctx.sendPhoto(_img));
+  images.slice((x > 8) ? x - 2 : x, x + 2).forEach(_img => ctx.sendPhoto(_img));
   delete (images);
 
 });
