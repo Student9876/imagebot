@@ -190,12 +190,6 @@ bot.on('message', async (ctx) => {
       console.log(`${err}\nGenerated Preview!`)
     })
   );
-  // }
-  // else
-  // {
-  //   ctx.reply("Looks like there aren't any matches for your search")
-  //   console.log("No Matches")
-  // }
 });
 
 bot.launch()
