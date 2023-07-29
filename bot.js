@@ -1,9 +1,11 @@
 const express = require('express');
 const { Telegraf } = require('telegraf');
 const { message } = require('telegraf/filters');
+const { fmt, link } = require("telegraf/format")
 const dotenv = require('dotenv');
 const google = require('googlethis');
 const mongoose = require('mongoose');
+var router = express.Router();
 dotenv.config();
 
 
@@ -49,12 +51,21 @@ const newUserSchema = {
 }
 
 
+
+
+
+
 const dataCollection_1 = "searchdata";
 const dataCollection_2 = "searchdata2.0";
 const userlist_1 = "userlist";
 
 const Item = mongoose.model(dataCollection_2, newItemSchema);
 const User = mongoose.model(userlist_1, newUserSchema);
+
+
+
+
+
 
 
 const options = {
@@ -137,16 +148,20 @@ bot.on('message', async (ctx) => {
     user.save();
   }
 
-  const searched_images_length = searched_images.length
+  
 
+  // if(searched_images)
+  // {
+  const searched_images_length = searched_images.length
   let x = randNum(searched_images_length);
   let images;
-  if (x < 95 && x > 0) {
+  if (x < searched_images_length - 5 && x > 0) {
     images = searched_images.slice(x, x + 5).map(img => {
       return {
         preview: img.preview.url,
         url: img.url,
-        origin: img.origin.website.url
+        origin: img.origin.website.url,
+        title: img.origin.title
       }
     });
   }
@@ -155,24 +170,32 @@ bot.on('message', async (ctx) => {
       return {
         preview: img.preview.url,
         url: img.url,
-        origin: img.origin.website.url
+        origin: img.origin.website.url,
+        title: img.origin.title
       }
     });
   }
 
   images.forEach(_img => ctx.sendPhoto(_img.url, {
-    caption: `URL: ${_img.url}\n\nOrigin: ${_img.origin}`
+    caption: fmt`${link("Photo", _img.url)} from ${link(_img.title, _img.origin)}`
   })
     .then(() => {
       console.log("URL!")
+      // console.clear();
     })
     .catch((err) => {
       ctx.sendPhoto(_img.preview, {
-        caption: `URL: ${_img.url}\n\nOrigin: ${_img.origin}`
+          caption: fmt`${link("Photo", _img.url)} from ${link(_img.title, _img.origin)}`
       })
-      console.log(`${err} \nGenerated Preview!`)
+      console.log(`${err}\nGenerated Preview!`)
     })
   );
+  // }
+  // else
+  // {
+  //   ctx.reply("Looks like there aren't any matches for your search")
+  //   console.log("No Matches")
+  // }
 });
 
 bot.launch()
@@ -180,7 +203,8 @@ bot.launch()
     console.log("Bot Running");
   })
   .catch((err) => {
-    console.log(`Error Running Bot: ${err}`);
+    console.log(`Error Running Bot: ${err}`)
+    // console.log(err.code());
   });
 
 
