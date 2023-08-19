@@ -26,7 +26,7 @@ app.listen(port, () => {
 const userID = process.env.USER_ID;
 const pass = process.env.PASS;
 const dbNAME = "botsDB";
-// const bot = new Telegraf(process.env.BOT_TOKEN);
+const bot = new Telegraf(process.env.BOT_TOKEN);
 const uri = "mongodb+srv://" + userID + ":" + pass + "@cluster1.pyohgr8.mongodb.net/" + dbNAME;
 
 mongoose.connect(uri, { useNewUrlParser: true })
