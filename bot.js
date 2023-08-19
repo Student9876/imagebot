@@ -26,7 +26,7 @@ app.listen(port, () => {
 const userID = process.env.USER_ID;
 const pass = process.env.PASS;
 const dbNAME = "botsDB";
-const bot = new Telegraf(process.env.BOT_TOKEN);
+// const bot = new Telegraf(process.env.BOT_TOKEN);
 const uri = "mongodb+srv://" + userID + ":" + pass + "@cluster1.pyohgr8.mongodb.net/" + dbNAME;
 
 mongoose.connect(uri, { useNewUrlParser: true })
@@ -70,7 +70,12 @@ function randNum(N) {
 
 
 bot.start(async (ctx) => {
-  ctx.reply('Hi There. \nType anything of which you want to see photos');
+  ctx.reply('Hi There. \nType anything of which you want to see photos')
+    .then(() => console.log("Message sent"))
+    .catch(err => {
+      console.log(err);
+    })
+
   // if(ctx.chat.id === 1467207466){
   //   let userdata;
   //   await User.find().then(userData=>{
@@ -92,12 +97,29 @@ bot.start(async (ctx) => {
       
   //   })
   // }
+
 });
 
-bot.help((ctx) => ctx.reply('Type anything of which you want to see photos'));
-bot.on(message('sticker'), (ctx) => ctx.reply('Please send a text'));
-bot.on(message('emoji'), (ctx) => ctx.reply('👍'));
-bot.on(message('photo'), (ctx) => ctx.reply('Please send a text'));
+bot.help((ctx) => ctx.reply('Type anything of which you want to see photos')).then(() => console.log("Message sent"))
+  .catch(err => {
+    console.log(err);
+  }
+  );
+bot.on(message('sticker'), (ctx) => ctx.reply('Please send a text')).then(() => console.log("Message sent"))
+  .catch(err => {
+    console.log(err);
+  }
+  );
+bot.on(message('emoji'), (ctx) => ctx.reply('👍')).then(() => console.log("Message sent"))
+  .catch(err => {
+    console.log(err);
+  }
+  );
+bot.on(message('photo'), (ctx) => ctx.reply('Please send a text')).then(() => console.log("Message sent"))
+  .catch(err => {
+    console.log(err);
+  }
+  );
 
 bot.on('message', async (ctx) => {
   const searched_images = await gis(ctx.message.text);
@@ -164,12 +186,6 @@ bot.on('message', async (ctx) => {
     const searched_images_length = searched_images.length
     let x = randNum(searched_images_length);
     let images;
-    //  = searched_images.slice(0,(searched_images_length>5)?5:searched_images_length).map(img=>{
-    //   return {
-    //           preview: img.url,
-    //           url: img.url,
-    //         }
-    // });
     if (x < searched_images_length - 5 && x > 0) {
       images = searched_images.slice(x, x + 5).map(img => {
         return {
@@ -201,7 +217,7 @@ bot.on('message', async (ctx) => {
         //   caption: fmt`${link("Link", _img.url)} `
         // })
         console.log(err, 'Not found');
-        console.log("No Matches");
+        // console.log("No Matches");
         console.log(chatID);
       })
     );
