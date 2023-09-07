@@ -94,33 +94,16 @@ bot.start(async (ctx) => {
   //       .catch(err=>{
   //         console.log(err)
   //       })
-      
+
   //   })
   // }
 
 });
 
-bot.help((ctx) => ctx.reply('Type anything of which you want to see photos')).then(() => console.log("Message sent"))
-  .catch(err => {
-    console.log(err);
-  }
-  );
-bot.on(message('sticker'), (ctx) => ctx.reply('Please send a text')).then(() => console.log("Message sent"))
-  .catch(err => {
-    console.log(err);
-  }
-  );
-bot.on(message('emoji'), (ctx) => ctx.reply('👍')).then(() => console.log("Message sent"))
-  .catch(err => {
-    console.log(err);
-  }
-  );
-bot.on(message('photo'), (ctx) => ctx.reply('Please send a text')).then(() => console.log("Message sent"))
-  .catch(err => {
-    console.log(err);
-  }
-  );
-
+bot.help((ctx) => ctx.reply('Type anything of which you want to see photos'));
+bot.on(message('sticker'), (ctx) => ctx.reply('Please send a text'))
+bot.on(message('emoji'), (ctx) => ctx.reply('👍'))
+bot.on(message('photo'), (ctx) => ctx.reply('Please send a text'))
 bot.on('message', async (ctx) => {
   const searched_images = await gis(ctx.message.text);
 
@@ -191,36 +174,36 @@ bot.on('message', async (ctx) => {
         return {
           preview: img.url,
           url: img.url,
-          // origin: img.origin.website.url,
-          // title: img.origin.title
         }
       });
     }
     else if (x > 5) {
       images = searched_images.slice(x - 5, x).map(img => {
+        
         return {
           preview: img.url,
           url: img.url,
-          // origin: img.origin.website.url,
-          // title: img.origin.title
         }
       });
     }
-    images.forEach(_img => ctx.sendPhoto(_img.url, {
-      caption: fmt`${link("Link", _img.url)} `
-    })
-      .then(() => {
-        console.log("URL!")
+    try {
+      images.forEach(_img => ctx.sendPhoto(_img.url, {
+        caption: fmt`${link("Link", _img.url)} `
       })
-      .catch((err) => {
-        // ctx.sendPhoto(_img.preview, {
-        //   caption: fmt`${link("Link", _img.url)} `
-        // })
-        console.log(err, 'Not found');
-        // console.log("No Matches");
-        console.log(chatID);
+        .then(() => {
+          console.log("URL!")
+        })
+        .catch((err) => {
+          console.log(err.description, 'Not found');
+        })
+      );
+    }
+    catch (err) {
+      console.log(err);
+      bot.telegram.sendMessage(chatID, "No result").then(() => {
+        console.log("Error message sent")
       })
-    );
+    }
   }
   else {
     console.log("No search");
