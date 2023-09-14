@@ -3,7 +3,7 @@ const { Telegraf } = require('telegraf');
 const { message } = require('telegraf/filters');
 const { fmt, link } = require("telegraf/format")
 const dotenv = require('dotenv');
-const google = require('googlethis');
+// const google = require('googlethis');
 const mongoose = require('mongoose');
 dotenv.config();
 
@@ -56,9 +56,9 @@ const Item = mongoose.model(dataCollection_2, newItemSchema);
 const User = mongoose.model(userlist_1, newUserSchema);
 
 
-const options = {
-  safe: false
-}
+// const options = {
+//   safe: false
+// }
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -81,10 +81,11 @@ bot.start(async (ctx) => {
   //   await User.find().then(userData=>{
   //     userdata = userData;
   //   })
-  //   const mes = `Hello.
-  //   Thank you so much for using our bot. 😉
-  //   I'm glad to inform you that our bot is being updated as there are errors occuring frequently.To make it more precise, we are working on it.
-  //   Keep searching!! 😊
+  //   const mes = `Hello everyone.
+  //   Thank you for staying connected with us.
+  //   The first stable version of the imagebot has been released. So from now on the crashes 
+  //   is reduced to none to serve you always and seemlessly.😊
+  //   Stay safe, keep searching 😉.
   //   `
   //   userdata.map(async user=>{
   //     console.log(user.chatID);
@@ -104,8 +105,14 @@ bot.help((ctx) => ctx.reply('Type anything of which you want to see photos'));
 bot.on(message('sticker'), (ctx) => ctx.reply('Please send a text'))
 bot.on(message('emoji'), (ctx) => ctx.reply('👍'))
 bot.on(message('photo'), (ctx) => ctx.reply('Please send a text'))
+bot.on(message('document'), (ctx) => ctx.reply('Please send a text'))
+bot.on(message('audio'), (ctx) => ctx.reply('Please send a text'))
+bot.on(message('voice'), (ctx) => ctx.reply('Please send a text'))
+bot.on(message('video'), (ctx) => ctx.reply('Please send a text'))
 bot.on('message', async (ctx) => {
-  const searched_images = await gis(ctx.message.text);
+  if(typeof(ctx.message.text) === 'string'){
+    const searched_images = await gis(ctx.message.text);
+  
 
   if (searched_images.length !== 0) {
 
@@ -179,7 +186,7 @@ bot.on('message', async (ctx) => {
     }
     else if (x > 5) {
       images = searched_images.slice(x - 5, x).map(img => {
-        
+
         return {
           preview: img.url,
           url: img.url,
@@ -208,7 +215,11 @@ bot.on('message', async (ctx) => {
   else {
     console.log("No search");
   }
-});
+}else {
+  ctx.reply('Please send a text');
+}
+}
+);
 
 
 bot.launch()
