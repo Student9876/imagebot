@@ -172,20 +172,20 @@ bot.on('message', async (ctx) => {
         user.save();
       }
 
-
+      const searchQuantity = 20;
       const searched_images_length = searched_images.length
       let x = randNum(searched_images_length);
       let images;
-      if (x < searched_images_length - 10 && x > 0) {
-        images = searched_images.slice(x, x + 10).map(img => {
+      if (x < searched_images_length - searchQuantity && x > 0) {
+        images = searched_images.slice(x, x + searchQuantity).map(img => {
           return {
             preview: img.url,
             url: img.url,
           }
         });
       }
-      else if (x > 5) {
-        images = searched_images.slice(x - 10, x).map(img => {
+      else if (x > searchQuantity) {
+        images = searched_images.slice(x - searchQuantity, x).map(img => {
 
           return {
             preview: img.url,
