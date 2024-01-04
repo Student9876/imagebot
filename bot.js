@@ -176,8 +176,8 @@ bot.on('message', async (ctx) => {
       const searched_images_length = searched_images.length
       let x = randNum(searched_images_length);
       let images;
-      if (x < searched_images_length - 5 && x > 0) {
-        images = searched_images.slice(x, x + 5).map(img => {
+      if (x < searched_images_length - 10 && x > 0) {
+        images = searched_images.slice(x, x + 10).map(img => {
           return {
             preview: img.url,
             url: img.url,
@@ -185,7 +185,7 @@ bot.on('message', async (ctx) => {
         });
       }
       else if (x > 5) {
-        images = searched_images.slice(x - 5, x).map(img => {
+        images = searched_images.slice(x - 10, x).map(img => {
 
           return {
             preview: img.url,
