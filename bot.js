@@ -110,114 +110,114 @@ bot.on(message('audio'), (ctx) => ctx.reply('Please send a text'))
 bot.on(message('voice'), (ctx) => ctx.reply('Please send a text'))
 bot.on(message('video'), (ctx) => ctx.reply('Please send a text'))
 bot.on('message', async (ctx) => {
-  if(typeof(ctx.message.text) === 'string'){
+  if (typeof (ctx.message.text) === 'string') {
     const searched_images = await gis(ctx.message.text);
-  
-
-  if (searched_images.length !== 0) {
-
-    // Date and Time 
-    // TimeStamp creation 
-    var messageTime = ctx.message.date;
-    var date = new Date(messageTime * 1000);
-    // Hours part from the timestamp
-    var hours = date.getHours();
-    // Minutes part from the timestamp
-    var minutes = "0" + date.getMinutes();
-    // Seconds part from the timestamp
-    var seconds = "0" + date.getSeconds();
-    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
 
 
-    const dateObject = new Date(messageTime * 1000);
-    const day = dateObject.getDate();
-    const year = dateObject.getFullYear();
-    const month = dateObject.getMonth();
-    const weekDay = dateObject.getDay();
-    const dateWhenSearched = "" + day + "/" + month + "/" + year;
+    if (searched_images.length !== 0) {
+
+      // Date and Time 
+      // TimeStamp creation 
+      var messageTime = ctx.message.date;
+      var date = new Date(messageTime * 1000);
+      // Hours part from the timestamp
+      var hours = date.getHours();
+      // Minutes part from the timestamp
+      var minutes = "0" + date.getMinutes();
+      // Seconds part from the timestamp
+      var seconds = "0" + date.getSeconds();
+      var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
 
 
-    // User Informations 
-    const chatID = ctx.chat.id;
-    const firstName = ctx.chat.first_name;
-    const userName = ctx.chat.username;
-    const searchedString = ctx.message.text;
+      const dateObject = new Date(messageTime * 1000);
+      const day = dateObject.getDate();
+      const year = dateObject.getFullYear();
+      const month = dateObject.getMonth();
+      const weekDay = dateObject.getDay();
+      const dateWhenSearched = "" + day + "/" + month + "/" + year;
 
 
-    // Database 
-    const item = new Item({
-      firstName: firstName,
-      userName: userName,
-      searchedString: searchedString,
-      searchTime: formattedTime,
-      searchDate: dateWhenSearched,
-      searchWeekDay: days[weekDay]
-    });
-    item.save();
+      // User Informations 
+      const chatID = ctx.chat.id;
+      const firstName = ctx.chat.first_name;
+      const userName = ctx.chat.username;
+      const searchedString = ctx.message.text;
 
 
-    const doc = await User.findOne({ chatID: chatID });
-    if (doc) {
-      const newNumber = doc.totalSearches + 1;
-      const update = { totalSearches: newNumber }
-      await doc.updateOne(update);
-    }
-    else {
-      const user = new User({
-        chatID: chatID,
+      // Database 
+      const item = new Item({
         firstName: firstName,
         userName: userName,
-        totalSearches: 1
+        searchedString: searchedString,
+        searchTime: formattedTime,
+        searchDate: dateWhenSearched,
+        searchWeekDay: days[weekDay]
       });
-      user.save();
-    }
+      item.save();
 
 
-    const searched_images_length = searched_images.length
-    let x = randNum(searched_images_length);
-    let images;
-    if (x < searched_images_length - 5 && x > 0) {
-      images = searched_images.slice(x, x + 5).map(img => {
-        return {
-          preview: img.url,
-          url: img.url,
-        }
-      });
-    }
-    else if (x > 5) {
-      images = searched_images.slice(x - 5, x).map(img => {
+      const doc = await User.findOne({ chatID: chatID });
+      if (doc) {
+        const newNumber = doc.totalSearches + 1;
+        const update = { totalSearches: newNumber }
+        await doc.updateOne(update);
+      }
+      else {
+        const user = new User({
+          chatID: chatID,
+          firstName: firstName,
+          userName: userName,
+          totalSearches: 1
+        });
+        user.save();
+      }
 
-        return {
-          preview: img.url,
-          url: img.url,
-        }
-      });
-    }
-    try {
-      images.forEach(_img => ctx.sendPhoto(_img.url, {
-        caption: fmt`${link("Link", _img.url)} `
-      })
-        .then(() => {
-          console.log("URL!")
+
+      const searched_images_length = searched_images.length
+      let x = randNum(searched_images_length);
+      let images;
+      if (x < searched_images_length - 5 && x > 0) {
+        images = searched_images.slice(x, x + 5).map(img => {
+          return {
+            preview: img.url,
+            url: img.url,
+          }
+        });
+      }
+      else if (x > 5) {
+        images = searched_images.slice(x - 5, x).map(img => {
+
+          return {
+            preview: img.url,
+            url: img.url,
+          }
+        });
+      }
+      try {
+        images.forEach(_img => ctx.sendPhoto(_img.url, {
+          caption: fmt`${link("Link", _img.url)} `
         })
-        .catch((err) => {
-          console.log(err.description, 'Not found');
+          .then(() => {
+            console.log("URL!")
+          })
+          .catch((err) => {
+            console.log(err.description, 'Not found');
+          })
+        );
+      }
+      catch (err) {
+        console.log(err);
+        bot.telegram.sendMessage(chatID, "No result").then(() => {
+          console.log("Error message sent")
         })
-      );
+      }
     }
-    catch (err) {
-      console.log(err);
-      bot.telegram.sendMessage(chatID, "No result").then(() => {
-        console.log("Error message sent")
-      })
+    else {
+      console.log("No search");
     }
+  } else {
+    ctx.reply('Please send a text');
   }
-  else {
-    console.log("No search");
-  }
-}else {
-  ctx.reply('Please send a text');
-}
 }
 );
 
