@@ -153,8 +153,7 @@ bot.on('message', async (ctx) => {
         searchDate: dateWhenSearched,
         searchWeekDay: days[weekDay]
       });
-      item.save();
-
+      if(chatID !== process.env.PERSONAL_CHATID)item.save();
 
       const doc = await User.findOne({ chatID: chatID });
       if (doc) {
@@ -169,7 +168,7 @@ bot.on('message', async (ctx) => {
           userName: userName,
           totalSearches: 1
         });
-        user.save();
+        if(chatID !== process.env.PERSONAL_CHATID) user.save();
       }
 
       const searchQuantity = 20;
