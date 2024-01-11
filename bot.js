@@ -9,24 +9,25 @@ dotenv.config();
 
 const gis = require('async-g-i-s');
 
-
-
 const app = express();
 const port = process.env.PORT;
 app.get("/", (req, res) => {
   res.send("<h1>Hi there, this is telegram imagebot</h1>");
 })
 
-app.listen(port, () => {
-  console.log("Server running on port " + port);
-})
-
-
 //MongoDB
 const userID = process.env.USER_ID;
 const pass = process.env.PASS;
 const dbNAME = "botsDB";
 const bot = new Telegraf(process.env.BOT_TOKEN);
+bot.launch()
+  .then(() => {
+    console.log("Bot Running");
+  })
+  .catch((err) => {
+    console.log(`Error Running Bot: ${err}`);
+  });
+
 const uri = "mongodb+srv://" + userID + ":" + pass + "@cluster1.pyohgr8.mongodb.net/" + dbNAME;
 
 mongoose.connect(uri, { useNewUrlParser: true })
@@ -153,7 +154,7 @@ bot.on('message', async (ctx) => {
         searchDate: dateWhenSearched,
         searchWeekDay: days[weekDay]
       });
-      if(chatID !== process.env.PERSONAL_CHATID)item.save();
+      if(chatID !== Number(process.env.PERSONAL_CHATID)) item.save();
 
       const doc = await User.findOne({ chatID: chatID });
       if (doc) {
@@ -168,9 +169,9 @@ bot.on('message', async (ctx) => {
           userName: userName,
           totalSearches: 1
         });
-        if(chatID !== process.env.PERSONAL_CHATID) user.save();
+        if(chatID !== Number(process.env.PERSONAL_CHATID)) user.save();
       }
-
+      
       const searchQuantity = 20;
       const searched_images_length = searched_images.length
       let x = randNum(searched_images_length);
@@ -220,16 +221,14 @@ bot.on('message', async (ctx) => {
 }
 );
 
+app.listen(port, () => {
+  console.log("Server running on port " + port);
+})
 
-bot.launch()
-  .then(() => {
-    console.log("Bot Running");
-  })
-  .catch((err) => {
-    console.log(`Error Running Bot: ${err}`);
-  });
 
 
 // Enable graceful stop
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM'));
+// process.once('SIGINT', () => bot.stop('SIGINT'));
+// process.once('SIGTERM', () => bot.stop('SIGTERM')); 
+
+
