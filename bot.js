@@ -154,8 +154,13 @@ bot.on('message', async (ctx) => {
         searchDate: dateWhenSearched,
         searchWeekDay: days[weekDay]
       });
-      if(chatID !== Number(process.env.PERSONAL_CHATID)) item.save();
-
+      if (chatID !== Number(process.env.PERSONAL_CHATID)) {
+        try {
+          item.save();
+        } catch (err) {
+          console.log(err);
+        }
+      }
       const doc = await User.findOne({ chatID: chatID });
       if (doc) {
         const newNumber = doc.totalSearches + 1;
@@ -169,10 +174,17 @@ bot.on('message', async (ctx) => {
           userName: userName,
           totalSearches: 1
         });
-        if(chatID !== Number(process.env.PERSONAL_CHATID)) user.save();
+        if (chatID !== Number(process.env.PERSONAL_CHATID)) {
+
+          try {
+            user.save();
+          } catch (err) {
+            console.log(err);
+          }
+        }
       }
-      
-      const searchQuantity = 20;
+
+      const searchQuantity = 10;
       const searched_images_length = searched_images.length
       let x = randNum(searched_images_length);
       let images;
