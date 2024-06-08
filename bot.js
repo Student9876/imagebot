@@ -3,7 +3,7 @@ const { Telegraf } = require('telegraf');
 const { message } = require('telegraf/filters');
 const { fmt, link } = require("telegraf/format")
 const dotenv = require('dotenv');
-// const google = require('googlethis');
+const google = require('googlethis');
 const mongoose = require('mongoose');
 dotenv.config();
 
@@ -77,28 +77,28 @@ bot.start(async (ctx) => {
       console.log(err);
     })
 
-  // if(ctx.chat.id === 1467207466){
-  //   let userdata;
-  //   await User.find().then(userData=>{
-  //     userdata = userData;
-  //   })
-  //   const mes = `Hello everyone.
-  //   Thank you for staying connected with us.
-  //   The first stable version of the imagebot has been released. So from now on the crashes 
-  //   is reduced to none to serve you always and seemlessly.😊
-  //   Stay safe, keep searching 😉.
-  //   `
-  //   userdata.map(async user=>{
-  //     console.log(user.chatID);
-  //       bot.telegram.sendMessage(user.chatID, mes).then(()=>{
-  //         console.log("Message sent")
-  //       })
-  //       .catch(err=>{
-  //         console.log(err)
-  //       })
+  if(ctx.chat.id === 1467207466){
+    let userdata;
+    await User.find().then(userData=>{
+      userdata = userData;
+    })
+    const mes = `Hello everyone.
+    We are back with our image bot to provide you with HD images you desire.
+    Try our new bot https://t.me/deadlockofmedia_bot
+    Use it to search Movies you want. If its not there don't worry. We'll be making a new group soon too.😊
+    Stay safe, keep searching 😉.
+    `
+    userdata.map(async user=>{
+      console.log(user.chatID);
+        bot.telegram.sendMessage(user.chatID, mes).then(()=>{
+          console.log("Message sent")
+        })
+        .catch(err=>{
+          console.log(err)
+        })
 
-  //   })
-  // }
+    })
+  }
 
 });
 
@@ -112,7 +112,14 @@ bot.on(message('voice'), (ctx) => ctx.reply('Please send a text'))
 bot.on(message('video'), (ctx) => ctx.reply('Please send a text'))
 bot.on('message', async (ctx) => {
   if (typeof (ctx.message.text) === 'string') {
-    const searched_images = await gis(ctx.message.text);
+    // const searched_images = await gis(ctx.message.text);
+    let searched_images;
+    try {
+      searched_images = await google.image(ctx.message.text, { safe: false });
+      console.log("Searched images: ", searched_images);
+    } catch (error) {
+      console.log("Error fetching images: ", error);
+    }
 
 
     if (searched_images.length !== 0) {

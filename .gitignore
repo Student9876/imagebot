@@ -1,7 +1,8 @@
 # Node modules 
 node_modules
 
-
+#export 
+export
 
 # local env files 
 .env
