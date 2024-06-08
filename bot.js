@@ -116,7 +116,6 @@ bot.on('message', async (ctx) => {
     let searched_images;
     try {
       searched_images = await google.image(ctx.message.text, { safe: false });
-      console.log("Searched images: ", searched_images);
     } catch (error) {
       console.log("Error fetching images: ", error);
     }
